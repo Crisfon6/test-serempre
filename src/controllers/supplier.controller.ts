@@ -1,7 +1,9 @@
 import { Request, Response, Router } from "express";
+import { param } from "express-validator";
 import { getRepository } from "typeorm";
 import { Supplier } from "../entity/Supplier.entity";
 import { Controller } from "../interfaces/controller.interface";
+import { validatePlaces } from '../middlewares/validate-places';
 
 export class SupplierController implements Controller{
     public path = '/suppliers';
@@ -12,9 +14,13 @@ export class SupplierController implements Controller{
         this.initializeRoutes();
     }
     private initializeRoutes(){
-        this.router.get(`${this.path}/:id`,this.getSupByID);
-        this.router.get(`${this.path}/:id/products`,this.getSupplier);
-        this.router.delete(`${this.path}/:id`,this.delete);
+        this.router.get(`${this.path}/:id`,
+        [param('id').isNumeric(),
+    validatePlaces],this.getSupByID);
+        this.router.get(`${this.path}/:id/products`,[param('id').isNumeric(),
+        validatePlaces],this.getSupplier);
+        this.router.delete(`${this.path}/:id`,[param('id').isNumeric(),
+        validatePlaces],this.delete);
     }
     private getSupByID = async(req:Request,res:Response)=>{
         const {id} = req.params;

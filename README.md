@@ -10,3 +10,6 @@ Steps to run this project:
 No sabia que tenia que activar el tcp para poder conectar a mssql
 veo posibilidad de mejoras en el esquema de base de datos que se presenta
 puesto que se repiten campos en diversas tablas
+
+tuve unos ciertos problemas llevaba tiempo trabajando solo con NoSql pero ya aprendi
+de nuevo

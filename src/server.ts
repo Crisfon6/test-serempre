@@ -4,6 +4,7 @@ import * as morgan from 'morgan';
 
 import * as cors from 'cors';
 import { Controller } from './interfaces/controller.interface';
+import { errorMiddleware } from './middlewares/error.middleware';
 
 
 export class Server{
@@ -22,6 +23,7 @@ export class Server{
         this.app.use(cors());
         this.app.use(morgan('dev'));
         this.app.use(express.json());
+        this.app.use(errorMiddleware);
     }
     
     private  initControllers(controllers:Controller[]){

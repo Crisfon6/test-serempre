@@ -7,6 +7,11 @@ import { Supplier } from '../entity/Supplier.entity';
 import  {saveTestData} from '../helper/saveDocDB';
 import { formatData } from '../helper/formatData';
 
+import {body, check, validationResult,query,param} from 'express-validator';
+import { validatePlaces } from '../middlewares/validate-places';
+import { validationMiddleware } from '../middlewares/validation.middleware';
+import { ProductDto } from '../dto/product.dto';
+
 export class ProductController implements Controller{
     public path = '/products';
     public router = Router();
@@ -19,12 +24,32 @@ export class ProductController implements Controller{
         this.initializeRoutes();
     }
     private initializeRoutes(){
-        this.router.post(`${this.path}/test`,[],this.createTest);
-        this.router.post(`${this.path}/`,[],this.create);
-        this.router.get(`${this.path}/`,this.getProducts);
-        this.router.get(`${this.path}/search`,this.search);
-        this.router.get(`${this.path}/:id`,this.getById);
-        this.router.put(`${this.path}/:id`,this.updateProduct);
+        this.router.post(`${this.path}/test`,this.createTest);
+        // this.router.post(`${this.path}/`,validationMiddleware(ProductDto,true),this.create);
+        this.router.post(`${this.path}/`,[body('category').isNumeric()
+    ,body('supplier').isNumeric(),validatePlaces],this.create);
+
+        this.router.get(`${this.path}/`,[
+            query('perPage').isNumeric(),
+            query('currentPage').isNumeric(),
+            validatePlaces
+        ],this.getProducts);
+
+        this.router.get(`${this.path}/search`,[
+            query('namecat').isString(),
+            query('nameprod').isString(),
+            query('namesup').isString(),
+            validatePlaces
+        ],this.search);
+
+        this.router.get(`${this.path}/:id`,check('id','Int Mandatory').isNumeric(),validatePlaces,
+      this.getById);
+        this.router.put(`${this.path}/:id`,
+        [param('id','Int Mandatory').isNumeric(),
+        validationMiddleware,
+      validatePlaces
+    ], 
+        this.updateProduct);
     }
     private createTest = async(req:Request,res:Response)=>{
         console.log('testdata');
@@ -35,9 +60,10 @@ export class ProductController implements Controller{
         });
 }
     private create = async(req:Request,res:Response)=>{
-        const {cat,sup}= req.body;
-        const catfound  = await this.categoryRepository.findOne(Number(cat));
-        const supfound = await this.supplierRepository.findOne(Number(sup));
+        
+        const {category,supplier}= req.body;
+        const catfound  = await this.categoryRepository.findOne(Number(category));
+        const supfound = await this.supplierRepository.findOne(Number(supplier));
         
         const prod = new  Product();
         prod.productName = "Cookies";
@@ -74,6 +100,7 @@ const countProducts = await this.productRepository.count();
     }
 
     private search = async(req:Request,res:Response)=>{
+        
         const {nameprod,namecat,namesup} = req.query;  
 
         let sup = undefined;
@@ -96,7 +123,7 @@ const countProducts = await this.productRepository.count();
         if(nameprod){
             query.productName = nameprod;
         }
-        console.log(query);
+        
        const products =   await this.productRepository.find({
             where:[query
             ],select:['productID','productName'],relations:['category',
@@ -108,6 +135,7 @@ const countProducts = await this.productRepository.count();
         });
     }
     private getById = async(req:Request,res:Response)=>{
+        console.log('getByID');
         const {id }=req.params;
         const products =   await this.productRepository.findByIds([id],{
             relations:['category',
