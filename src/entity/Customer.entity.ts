@@ -2,7 +2,7 @@
 import { Column, Entity, PrimaryGeneratedColumn,ManyToMany, JoinTable, ManyToOne, OneToOne, OneToMany } from 'typeorm';
 
 import { Order } from './Order.entity';
-import { CustomerDemographics } from './CustomerDemographics.entity';
+import { CustomerDemographic } from './CustomerDemographic.entity';
 
 
 
@@ -96,10 +96,10 @@ export class Customer{
     fax:string;
 
 
-    @ManyToOne(()=>Order, Order=>Order.customer)
-    order:Order;
+    @OneToMany(()=>Order, Order=>Order.customer)
+    orders:Order[];
 
-    @ManyToMany(type =>CustomerDemographics)
+    @ManyToMany(() =>CustomerDemographic)
     @JoinTable()
-    customerDemographics:CustomerDemographics[];
+    customerDemographic:CustomerDemographic;
 }

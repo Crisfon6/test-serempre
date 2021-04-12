@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Category } from './Category.entity';
-import { OrderDetails } from "./OrderDetails.entity";
-import { Supplier } from './Suppliers.entity';
+import { OrderDetail } from "./OrderDetail.entity";
+import { Supplier } from './Supplier.entity';
 
 @Entity("Products")
 export class Product{
@@ -36,28 +36,34 @@ export class Product{
         type: "smallint",
         name: "UnitsInStock"
     })
-    unitsInStock:Number;
+    unitsInStock:number;
+
+    @Column({
+        type: "smallint",
+        name: "UnitsOnOrder"
+    })
+    unitsOnOrder:number;
 
     @Column({
         type: "smallint",
         name: "ReorderLevel"
     })
-    reorderLevel:Number;
+    reorderLevel:number;
 
     @Column({
         type: "tinyint",
         name: "Discontinued"
     })
-    discontinued:Number;
-
-  
-    @ManyToOne(()=>OrderDetails, orderDetails=>orderDetails.product)
-    orderDetails:OrderDetails;
-
+    discontinued:number;
     
-    @OneToMany(()=>Category, category=>category.product)
-    category:Category[];
+    @OneToMany(()=>OrderDetail,(orderDetails)=> orderDetails.product)
+    public orderDetails!:OrderDetail[];
 
-    @OneToMany(()=>Supplier, supplier=>supplier.product)
-    supplier:Supplier[];
+
+    @ManyToOne(()=>Category, category=>category.products)
+    category:Category;
+
+
+    @ManyToOne(()=>Supplier, supplier=>supplier.products,{onDelete: 'CASCADE'})
+    supplier:Supplier;
 }

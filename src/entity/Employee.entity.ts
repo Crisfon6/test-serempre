@@ -1,12 +1,14 @@
 import { profile } from "console";
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { EmployeeTerritorie } from "./EmployeeTerritorie.entity";
-import { Product } from './Products.entity';
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
+
+import { Order } from "./Order.entity";
+import { Product } from './Product.entity';
+import { Territory } from './Territory.entity';
 
 
 
 @Entity("Employees")
-export class Employees{
+export class Employee{
     @PrimaryGeneratedColumn({
         type: "int",
         name: "EmployeeID"
@@ -128,11 +130,16 @@ export class Employees{
         name: "PhotoPath",
         length: 255        
     })photoPath:string;
+    
+    @OneToMany(()=>Order,order=>order.employee)
+    orders:Order[];
 
-    @ManyToOne(()=>Employees, employee=>employee.reportsTo)//ojito
-    reportsTo:Employees;
+
+    @OneToMany(()=>Employee, employee=>employee.reportsTo)//ojito
+    reportsTo:Employee[];
 
     
-    @ManyToOne(()=>EmployeeTerritorie, employeeTerritorie=>employeeTerritorie.employee)//ojito
-    employeeTerritorie:EmployeeTerritorie;
+    @ManyToMany(()=>Territory)//ojito
+    @JoinTable()
+    territories:Territory[];
 }

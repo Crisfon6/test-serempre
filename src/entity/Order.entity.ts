@@ -1,9 +1,10 @@
 
 import { Column, Entity, PrimaryGeneratedColumn,ManyToMany, JoinTable, ManyToOne, OneToOne, OneToMany } from 'typeorm';
 import { Customer } from './Customer.entity';
-import { OrderDetails } from './OrderDetails.entity';
-import { Product } from './Products.entity';
+import { OrderDetail } from './OrderDetail.entity';
+import { Product } from './Product.entity';
 import { Shipper } from './Shipper.entity';
+import { Employee } from './Employee.entity';
 
 
 @Entity("Orders")
@@ -102,15 +103,18 @@ export class Order{
         }
     )
     shipCountry:string;
-      
-    @ManyToOne(()=>OrderDetails, orderDetails=>orderDetails.order)
-    orderDetails:OrderDetails;
 
-    @OneToMany(()=>Shipper, shipper=>shipper.order)
-    shipper:Shipper[];
+
+    @OneToMany(()=>OrderDetail,(orderDetails)=> orderDetails.order)
+    public orderDetails!:OrderDetail[];
+  
+
+    @ManyToOne(()=>Shipper, shipper=>shipper.orders)
+    shipper:Shipper;
     
-    @OneToMany(()=>Customer, customer=>customer.order)
-    customer:Shipper[];
+    @ManyToOne(()=>Customer, customer=>customer.orders)
+    customer:Shipper;
     
-    
+    @ManyToOne(()=>Employee, employees=>employees.orders)
+    employee:Employee;
 }

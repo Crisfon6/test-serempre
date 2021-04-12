@@ -1,6 +1,6 @@
 import { profile } from "console";
 import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Product } from './Products.entity';
+import { Product } from './Product.entity';
 
 @Entity("Categories")
 export class Category{
@@ -27,9 +27,11 @@ export class Category{
         type: "image",
         name: "Picture",        
     })
-    picture:any;
+    picture:Buffer;
     
-    @ManyToOne(()=>Product, product=>product.category)
-    product:Product;
+    
   
+    @OneToMany(()=>Product, product=>product.category)
+    products:Product[];
+
 }

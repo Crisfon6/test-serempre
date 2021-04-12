@@ -1,6 +1,6 @@
 
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne,  } from 'typeorm';
-import { Product } from './Products.entity';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany,  } from 'typeorm';
+import { Product } from './Product.entity';
 
 @Entity("Suppliers")
 export class Supplier{
@@ -65,7 +65,7 @@ export class Supplier{
             length: 10
         }
     )
-    postalCode:string;
+    postalCode:number;
     
     @Column( {
         type: "nvarchar",
@@ -97,6 +97,6 @@ export class Supplier{
     })
     homePage:string;
 
-    @ManyToOne(()=>Product, product=>product.supplier)
-    product:Product;
+    @OneToMany(()=>Product, product=>product.supplier,{onDelete: 'CASCADE'})
+    products:Product[];
 }

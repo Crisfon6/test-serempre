@@ -1,7 +1,7 @@
 
 import { Column, Entity, PrimaryGeneratedColumn,ManyToMany, JoinTable, ManyToOne, OneToOne, OneToMany } from 'typeorm';
 import { Order } from './Order.entity';
-import { OrderDetails } from './OrderDetails.entity';
+import { OrderDetail } from './OrderDetail.entity';
 
 
 
@@ -20,22 +20,17 @@ export class Shipper{
             length: 40
         }
     )
-    companyName:string;
-
-
-    
+    companyName:string;    
     @Column(
         {
             type: "nvarchar",
             name: "Phone",
             length: 24
-            
         }
     )
     phone:string;
-      
     @OneToMany(()=>Order, order=>order.shipper)
-    order:Order[];
+    orders:Order[];
 
 
     

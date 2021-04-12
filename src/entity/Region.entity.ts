@@ -14,7 +14,7 @@ export class Region{
         name: "RegionDescription"
     })regionDescription:string;
   
-    @ManyToOne(()=>Territory, territory=>territory.region)
-    territory:Territory;
+    @OneToMany(()=>Territory, territory=>territory.region)
+    territories:Territory[];
 
 }
