@@ -13,3 +13,6 @@ puesto que se repiten campos en diversas tablas
 
 tuve unos ciertos problemas llevaba tiempo trabajando solo con NoSql pero ya aprendi
 de nuevo
+
+documentation of API
+https://web.postman.co/documentation/8198333-5b806c6c-95d7-4514-b878-67c483f09ce0/publish?workspaceId=6397cdff-35d3-4d36-832c-b590b19adf1e
